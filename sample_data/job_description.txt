@@ -1,0 +1,20 @@
+Software Engineering Placement
+
+We are looking for a Software Engineering placement student to join our
+development team.
+
+Applicants should currently be studying Software Engineering, Computer
+Science or a related computing degree at university.
+
+Previous experience developing software through projects, coursework or
+other relevant experience is required.
+
+Candidates should have experience with Java, Python and Git.
+
+Strong teamwork, communication and problem-solving skills are important.
+
+Experience with SQL is desirable.
+
+PostgreSQL knowledge would be beneficial.
+
+Commercial software development experience would be advantageous.

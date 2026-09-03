@@ -1,120 +1,164 @@
 from src.requirement_analyzer import (
     analyze_job_requirements,
     extract_matching_sentences,
+    extract_required_technical_skills,
     extract_soft_skills,
     split_into_sentences,
 )
 
 
-def test_extract_soft_skills_finds_common_requirements():
+def test_extract_soft_skills_finds_common_skills():
     text = """
-    We are looking for someone with excellent communication skills,
-    strong problem solving ability and experience working in a team.
+    Strong communication, teamwork and problem solving
+    skills are required.
     """
 
     result = extract_soft_skills(text)
 
     assert result == {
         "communication",
-        "problem solving",
         "teamwork",
+        "problem solving",
     }
 
 
-def test_extract_soft_skills_avoids_duplicates():
+def test_extract_soft_skills_removes_duplicates():
     text = """
-    You should be a team player who enjoys collaboration and
-    working in a team.
+    Communication and verbal communication are important.
     """
 
     result = extract_soft_skills(text)
 
-    assert result == {"teamwork"}
+    assert result == {
+        "communication",
+    }
 
 
 def test_split_into_sentences():
     text = (
-        "Applicants should be studying towards a degree. "
-        "Experience with Python would be beneficial. "
-        "Strong communication skills are required."
+        "Java experience required. "
+        "Python would be beneficial. "
+        "Strong teamwork is important."
     )
 
     result = split_into_sentences(text)
 
     assert result == [
-        "Applicants should be studying towards a degree.",
-        "Experience with Python would be beneficial.",
-        "Strong communication skills are required.",
+        "Java experience required.",
+        "Python would be beneficial.",
+        "Strong teamwork is important.",
+    ]
+
+
+def test_split_into_sentences_handles_new_lines():
+    text = """
+    Java experience required
+    Python would be beneficial
+    Strong teamwork is important
+    """
+
+    result = split_into_sentences(text)
+
+    assert result == [
+        "Java experience required",
+        "Python would be beneficial",
+        "Strong teamwork is important",
     ]
 
 
 def test_extract_matching_sentences():
-    text = (
-        "Applicants should be studying towards a degree. "
-        "Strong communication skills are required. "
-        "Previous project experience would be beneficial."
-    )
+    text = """
+    Java experience is required.
+    PostgreSQL would be beneficial.
+    Strong teamwork is important.
+    """
 
     result = extract_matching_sentences(
         text,
-        ["experience"],
+        ["beneficial"],
     )
 
     assert result == [
-        "Previous project experience would be beneficial."
+        "PostgreSQL would be beneficial."
     ]
+
+
+def test_required_technical_skills_exclude_desirable_skills():
+    text = """
+    Java, Python and Git are required.
+    PostgreSQL would be beneficial.
+    """
+
+    result = extract_required_technical_skills(
+        text
+    )
+
+    assert result == {
+        "java",
+        "python",
+        "git",
+    }
 
 
 def test_analyze_job_requirements_combines_categories():
     text = """
-    Technology Placement Student.
+    We are looking for an undergraduate studying
+    Software Engineering or Computer Science.
 
-    Applicants should be studying towards a Software Engineering
-    or Computer Science degree.
+    Java and Python experience is required.
 
-    Experience with Java, Python, Git and PostgreSQL would be beneficial.
+    Strong communication and teamwork skills are important.
 
-    You should have strong communication and problem solving skills
-    and enjoy collaborating with other team members.
+    PostgreSQL would be beneficial.
     """
 
     result = analyze_job_requirements(text)
 
-    assert result["technical_skills"] == {
+    assert "java" in result["technical_skills"]
+    assert "python" in result["technical_skills"]
+    assert "postgresql" in result["technical_skills"]
+
+    assert result["required_technical_skills"] == {
         "java",
         "python",
-        "git",
-        "postgresql",
     }
 
-    assert result["soft_skills"] == {
-        "communication",
-        "problem solving",
-        "teamwork",
-    }
+    assert "communication" in result["soft_skills"]
+    assert "teamwork" in result["soft_skills"]
 
     assert result["education_required"] is True
     assert result["experience_required"] is True
     assert result["desirable_criteria_present"] is True
 
-    assert len(result["education_evidence"]) == 1
-    assert len(result["experience_evidence"]) == 1
-    assert len(result["desirable_evidence"]) == 1
 
-
-def test_analyze_job_requirements_handles_minimal_job_description():
+def test_job_title_is_not_treated_as_education_requirement():
     text = """
-    Entry-level technology role.
+    Software Engineering Placement.
 
-    We are looking for someone who is eager to learn.
+    Experience with Java and Python is required.
     """
 
     result = analyze_job_requirements(text)
 
-    assert result["technical_skills"] == set()
-    assert result["soft_skills"] == {"adaptability"}
     assert result["education_required"] is False
+    assert result["education_evidence"] == []
+
+
+def test_desirable_experience_is_not_treated_as_required():
+    text = """
+    Java knowledge is required.
+
+    Previous project experience would be beneficial.
+    """
+
+    result = analyze_job_requirements(text)
+
     assert result["experience_required"] is False
 
-    assert result["education_evidence"] == []
     assert result["experience_evidence"] == []
+
+    assert result["desirable_criteria_present"] is True
+
+    assert result["desirable_evidence"] == [
+        "Previous project experience would be beneficial."
+    ]

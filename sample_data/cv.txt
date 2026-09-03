@@ -1,0 +1,44 @@
+Saad Example
+Software Engineering Student
+
+PROFILE
+
+Software Engineering student with experience building Java and Python
+projects through university coursework and independent development.
+Interested in software engineering placement opportunities.
+
+EDUCATION
+
+MSci Software Engineering
+UK University
+
+Currently studying Software Engineering at university.
+
+TECHNICAL SKILLS
+
+Java
+Python
+Git
+SQL
+PostgreSQL
+
+PROJECT EXPERIENCE
+
+Java Application
+
+Built a Java application as part of a university software engineering
+project. Implemented object-oriented classes and used Git during
+development.
+
+Python Data Analysis Project
+
+Developed a Python project to process and analyse structured data.
+Created reusable functions and tested different input cases.
+
+TEAMWORK AND COMMUNICATION
+
+Collaborated with other students during group coursework and contributed
+to planning and implementation.
+
+Communication is one of my strengths and I have presented project work
+during university assignments.
