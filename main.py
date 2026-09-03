@@ -1,11 +1,18 @@
-from src.text_processor import normalize_text
+from src.skill_extractor import extract_skills
 
 
-sample_text = """
-Software Engineer required!
+sample_job_description = """
+We are looking for a Software Engineering placement student.
 
-Skills:
-Java, Python, C++, C#, .NET and React.
+The successful candidate will work with Java, Python and React.
+Experience with PostgreSQL, Git and GitHub would be beneficial.
+
+You should be a strong communicator with an interest in technology.
 """
 
-print(normalize_text(sample_text))
+skills = extract_skills(sample_job_description)
+
+print("Detected skills:")
+
+for skill in sorted(skills):
+    print(f"- {skill}")
